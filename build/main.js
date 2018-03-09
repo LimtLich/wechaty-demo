@@ -133,7 +133,7 @@ app.set('port', port);
 app.use('/api', __WEBPACK_IMPORTED_MODULE_5__api__["a" /* default */]);
 
 // Import and Set Nuxt.js options
-let config = __webpack_require__(11);
+let config = __webpack_require__(12);
 config.dev = !("development" === 'production');
 
 // Init Nuxt.js
@@ -216,54 +216,15 @@ router.use(__WEBPACK_IMPORTED_MODULE_1__users__["a" /* default */]);
 
 
 const router = Object(__WEBPACK_IMPORTED_MODULE_0_express__["Router"])();
+const {
+  Wechaty
+} = __webpack_require__(11);
 
-// login
-router.post('/login', async (req, res, next) => {
-  let userRes = await __WEBPACK_IMPORTED_MODULE_1_superagent___default.a.post(`${__WEBPACK_IMPORTED_MODULE_2__api_config__["a" /* HOST_ROOT */]}/bidCompanyInfo/login;jsessionid=${req.body.JSESSIONID}`).type('form').set('Accept', 'application/json').send(req.body);
-  if (userRes) {
-    let data = JSON.parse(userRes.text);
-    // console.log(data)
-    req.session.authUser = data.data;
-    return res.json(data);
-  }
-  res.status(401).json({
-    message: 'Bad credentials'
-  });
-});
+// init
+router.post('/init', async (req, res, next) => {
 
-//注册
-router.post('/register', async (req, res, next) => {
-  let userRes = await __WEBPACK_IMPORTED_MODULE_1_superagent___default.a.post(`${__WEBPACK_IMPORTED_MODULE_2__api_config__["a" /* HOST_ROOT */]}/bidCompanyInfo/register;jsessionid=${req.body.JSESSIONID}`).type('form').set('Accept', 'application/json').send(req.body);
-  if (userRes) {
-    let data = JSON.parse(userRes.text);
-    // console.log(data)
-    req.session.authUser = data.data;
-    return res.json(data);
-  }
-  res.status(401).json({
-    message: 'Bad credentials'
-  });
-});
-
-// logout
-router.post('/logout', (req, res) => {
-  delete req.session.authUser;
-  res.json({
-    ok: true
-  });
-});
-
-//geetest
-router.get('/geetest', async (req, res, next) => {
-  let geetest = await __WEBPACK_IMPORTED_MODULE_1_superagent___default.a.get(`${__WEBPACK_IMPORTED_MODULE_2__api_config__["a" /* HOST_ROOT */]}/bidCompanyInfo/getGt3`);
-  // let geetest = await request.get(`${HOST_ROOT}/bidCompanyInfo/getGt3`)
-  if (geetest) {
-    let data = JSON.parse(geetest.text);
-    return res.json(data);
-  }
-  res.status(401).json({
-    message: 'Bad credentials'
-  });
+  Wechaty.instance() // Singleton
+  .on('scan', (url, code) => console.log(`Scan QR Code to login: ${code}\n${url}`)).on('login', user => console.log(`User ${user} logined`)).on('message', message => console.log(`Message: ${message}`)).start();
 });
 
 /* harmony default export */ __webpack_exports__["a"] = (router);
@@ -279,26 +240,18 @@ module.exports = require("superagent");
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-// export const HOST_ROOT = process.env.NODE_ENV !== 'production' ? 'https://weixin247.7ipr.com/bid' : 'https://exend.7ipr.com/bid'
-// export const STATICS_ROOT = process.env.NODE_ENV !== 'production' ? 'https://weixin247.7ipr.com/bid/' : 'https://exend.7ipr.com/bid/'
 const API_ROOT =  true ? '/api' : '/api';
 /* unused harmony export API_ROOT */
-
-const HOST_ROOT =  true ? 'https://exend.7ipr.com/bid' : 'https://exend.7ipr.com/bid';
-/* harmony export (immutable) */ __webpack_exports__["a"] = HOST_ROOT;
-
-const STATICS_ROOT =  true ? 'https://exend.7ipr.com/bid/' : 'https://exend.7ipr.com/bid/';
-/* unused harmony export STATICS_ROOT */
-
-const FILE_ROOT =  true ? "https://meadend.7ipr.com" : "https://meadend.7ipr.com";
-/* unused harmony export FILE_ROOT */
-
-const DI_BACKEND =  true ? 'https://diweixin.7ipr.com' : 'https://diweixin.7ipr.com';
-/* unused harmony export DI_BACKEND */
 
 
 /***/ }),
 /* 11 */
+/***/ (function(module, exports) {
+
+module.exports = require("wechaty");
+
+/***/ }),
+/* 12 */
 /***/ (function(module, exports) {
 
 module.exports = {

@@ -14,14 +14,6 @@ axios.interceptors.request.use(config => {
   return Promise.reject(error)
 })
 
-function creatLog(userId) {
-  return encodeURIComponent(JSON.stringify({
-    begTime: new Date().getTime(),
-    app: "weixin",
-    userId
-  }))
-}
-
 function fetch(url) {
   return new Promise((resolve, reject) => {
     axios.get(url)
@@ -40,6 +32,6 @@ function post(url, data) {
   })
 }
 
-export function login(params) {
-  return post(`${API_ROOT}/login`, params)
+export function init(params) {
+  return post(`${API_ROOT}/init`, params)
 }

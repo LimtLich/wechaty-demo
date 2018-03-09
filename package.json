@@ -18,8 +18,10 @@
     "cors": "^2.8.4",
     "element-ui": "^2.2.1",
     "express-session": "^1.15.6",
+    "node-sass": "^4.7.2",
     "nuxt": "^1.0.0",
     "query-string": "^5.1.0",
+    "sass-loader": "^6.0.7",
     "session-file-store": "^1.2.0",
     "superagent": "^3.8.2",
     "wechaty": "^0.13.72"

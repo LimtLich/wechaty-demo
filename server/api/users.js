@@ -7,60 +7,19 @@ import {
 } from '../../api/config'
 
 const router = Router()
+const {
+  Wechaty
+} = require('wechaty')
 
-// login
-router.post('/login', async (req, res, next) => {
-  let userRes = await request.post(`${HOST_ROOT}/bidCompanyInfo/login;jsessionid=${req.body.JSESSIONID}`)
-    .type('form')
-    .set('Accept', 'application/json')
-    .send(req.body)
-  if (userRes) {
-    let data = JSON.parse(userRes.text)
-    // console.log(data)
-    req.session.authUser = data.data
-    return res.json(data)
-  }
-  res.status(401).json({
-    message: 'Bad credentials'
-  })
-})
+// init
+router.post('/init', async (req, res, next) => {
 
-//注册
-router.post('/register', async (req, res, next) => {
-  let userRes = await request.post(`${HOST_ROOT}/bidCompanyInfo/register;jsessionid=${req.body.JSESSIONID}`)
-    .type('form')
-    .set('Accept', 'application/json')
-    .send(req.body)
-  if (userRes) {
-    let data = JSON.parse(userRes.text)
-    // console.log(data)
-    req.session.authUser = data.data
-    return res.json(data)
-  }
-  res.status(401).json({
-    message: 'Bad credentials'
-  })
-})
 
-// logout
-router.post('/logout', (req, res) => {
-  delete req.session.authUser
-  res.json({
-    ok: true
-  })
-})
-
-//geetest
-router.get('/geetest', async (req, res, next) => {
-  let geetest = await request.get(`${HOST_ROOT}/bidCompanyInfo/getGt3`)
-  // let geetest = await request.get(`${HOST_ROOT}/bidCompanyInfo/getGt3`)
-  if (geetest) {
-    let data = JSON.parse(geetest.text)
-    return res.json(data)
-  }
-  res.status(401).json({
-    message: 'Bad credentials'
-  })
+  Wechaty.instance() // Singleton
+    .on('scan', (url, code) => console.log(`Scan QR Code to login: ${code}\n${url}`))
+    .on('login', user => console.log(`User ${user} logined`))
+    .on('message', message => console.log(`Message: ${message}`))
+    .start()
 })
 
 export default router
