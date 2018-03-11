@@ -32,6 +32,14 @@ function post(url, data) {
   })
 }
 
-export function init(params) {
-  return post(`${API_ROOT}/init`, params)
+export function init() {
+  return fetch(`${API_ROOT}/init`)
+}
+
+export function getUserInfo(params) {
+  return fetch(`${API_ROOT}/getUserInfo`)
+}
+
+export function say(params) {
+  return post(`${API_ROOT}/say`,params)
 }

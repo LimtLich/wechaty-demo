@@ -81,19 +81,15 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_express___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_express__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_nuxt__ = __webpack_require__(2);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_nuxt___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_nuxt__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_express_session__ = __webpack_require__(3);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_express_session___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_express_session__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_body_parser__ = __webpack_require__(4);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_body_parser___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_body_parser__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_cors__ = __webpack_require__(5);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_cors___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4_cors__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__api__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_body_parser__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_body_parser___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_body_parser__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_cors__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_cors___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_cors__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__api__ = __webpack_require__(5);
 
 
 
 
-
-var FileStore = __webpack_require__(6)(__WEBPACK_IMPORTED_MODULE_2_express_session___default.a);
 
 
 
@@ -102,38 +98,24 @@ const host = process.env.HOST || '0.0.0.0';
 const port = process.env.PORT || 3000;
 
 // Body parser，用来封装 req.body
-app.use(__WEBPACK_IMPORTED_MODULE_3_body_parser___default.a.json());
-app.use(__WEBPACK_IMPORTED_MODULE_3_body_parser___default.a.urlencoded({
+app.use(__WEBPACK_IMPORTED_MODULE_2_body_parser___default.a.json());
+app.use(__WEBPACK_IMPORTED_MODULE_2_body_parser___default.a.urlencoded({
   extended: false
 }));
 // cors
-app.use(__WEBPACK_IMPORTED_MODULE_4_cors___default()());
-
-app.use(__WEBPACK_IMPORTED_MODULE_2_express_session___default()({
-  secret: '7ipr-bidmarket',
-  resave: false,
-  saveUninitialized: true,
-  resave: false,
-  store: new FileStore(),
-  cookie: {
-    maxAge: 24 * 60 * 60 * 1000
-  }
-}));
+app.use(__WEBPACK_IMPORTED_MODULE_3_cors___default()());
 
 app.use(function (req, res, next) {
-  if (!req.session) {
-    return next(new Error('Oh no')); //handle error
-  }
   next(); //otherwise continue
 });
 
 app.set('port', port);
 
 // Import API Routes
-app.use('/api', __WEBPACK_IMPORTED_MODULE_5__api__["a" /* default */]);
+app.use('/api', __WEBPACK_IMPORTED_MODULE_4__api__["a" /* default */]);
 
 // Import and Set Nuxt.js options
-let config = __webpack_require__(12);
+let config = __webpack_require__(10);
 config.dev = !("development" === 'production');
 
 // Init Nuxt.js
@@ -162,34 +144,22 @@ module.exports = require("nuxt");
 /* 3 */
 /***/ (function(module, exports) {
 
-module.exports = require("express-session");
+module.exports = require("body-parser");
 
 /***/ }),
 /* 4 */
 /***/ (function(module, exports) {
 
-module.exports = require("body-parser");
-
-/***/ }),
-/* 5 */
-/***/ (function(module, exports) {
-
 module.exports = require("cors");
 
 /***/ }),
-/* 6 */
-/***/ (function(module, exports) {
-
-module.exports = require("session-file-store");
-
-/***/ }),
-/* 7 */
+/* 5 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_express__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_express___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_express__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__users__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__bot__ = __webpack_require__(6);
 
 
 
@@ -197,46 +167,106 @@ module.exports = require("session-file-store");
 const router = Object(__WEBPACK_IMPORTED_MODULE_0_express__["Router"])();
 
 // Add USERS Routes
-router.use(__WEBPACK_IMPORTED_MODULE_1__users__["a" /* default */]);
+router.use(__WEBPACK_IMPORTED_MODULE_1__bot__["a" /* default */]);
 
 /* harmony default export */ __webpack_exports__["a"] = (router);
 
 /***/ }),
-/* 8 */
+/* 6 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_express__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_express___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_express__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_superagent__ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_superagent__ = __webpack_require__(7);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_superagent___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_superagent__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__api_config__ = __webpack_require__(10);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__api_config__ = __webpack_require__(8);
+var _this = this;
 
 
 
 
 const router = Object(__WEBPACK_IMPORTED_MODULE_0_express__["Router"])();
+let qrCode = null;
 const {
-  Wechaty
-} = __webpack_require__(11);
+  Wechaty,
+  Room
+} = __webpack_require__(9);
+
+const bot = Wechaty.instance({
+  profile: 'WECHATY_PROFILE'
+});
+bot.on('logout', user => log.info('Bot', `${user.name()} logouted`)).on('login', user => {
+  console.log('Bot', `${user.name()} login`);
+  bot.say('Wechaty login').catch(console.error);
+}).on('scan', (url, code) => {
+  if (!/201|200/.test(String(code))) {
+    const loginUrl = url.replace(/\/qrcode\//, '/l/');
+    // QrcodeTerminal.generate(loginUrl)
+  }
+  qrCode = url;
+
+  // res.json(url)
+  console.log(`${url}\n[${code}] Scan QR Code above url to log in: `);
+});
+bot.start();
 
 // init
-router.post('/init', async (req, res, next) => {
+router.get('/init', async (req, res, next) => {
+  let self = _this;
+  if (!bot.logonoff()) {
+    self.checkCode = setInterval(function () {
+      if (qrCode) {
+        clearInterval(self.checkCode);
+        res.json(qrCode);
+      }
+    }, 1000);
+  } else {
+    res.json();
+  }
+});
 
-  Wechaty.instance() // Singleton
-  .on('scan', (url, code) => console.log(`Scan QR Code to login: ${code}\n${url}`)).on('login', user => console.log(`User ${user} logined`)).on('message', message => console.log(`Message: ${message}`)).start();
+//get rooms
+router.get('/getUserInfo', async (req, res, next) => {
+  let self = _this;
+  self.checkLogin = setInterval(function () {
+    if (bot.logonoff()) {
+      clearInterval(self.checkLogin);
+      const user = bot.self();
+      res.json(user);
+      // setTimeout(async function () {
+      //   const user = bot.self()
+      //   const roomList = await Room.findAll()
+      //   res.json({
+      //     user: user.name(),
+      //     roomList
+      //   })
+      // }, 10 * 1000)
+    }
+    console.log(bot.logonoff());
+  }, 1000);
+});
+
+// say
+router.post('/say', async (req, res, next) => {
+  // bot.say('666')
+  const imgUrl = req.body.url;
+  console.log(imgUrl);
+  bot.say(new MediaMessage(imgUrl));
+  // bot.logout()
+  res.json("success");
 });
 
 /* harmony default export */ __webpack_exports__["a"] = (router);
 
 /***/ }),
-/* 9 */
+/* 7 */
 /***/ (function(module, exports) {
 
 module.exports = require("superagent");
 
 /***/ }),
-/* 10 */
+/* 8 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -245,13 +275,13 @@ const API_ROOT =  true ? '/api' : '/api';
 
 
 /***/ }),
-/* 11 */
+/* 9 */
 /***/ (function(module, exports) {
 
 module.exports = require("wechaty");
 
 /***/ }),
-/* 12 */
+/* 10 */
 /***/ (function(module, exports) {
 
 module.exports = {

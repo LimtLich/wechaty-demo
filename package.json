@@ -20,6 +20,7 @@
     "express-session": "^1.15.6",
     "node-sass": "^4.7.2",
     "nuxt": "^1.0.0",
+    "ope": "^1.0.2",
     "query-string": "^5.1.0",
     "sass-loader": "^6.0.7",
     "session-file-store": "^1.2.0",

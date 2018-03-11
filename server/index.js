@@ -3,10 +3,8 @@ import {
   Nuxt,
   Builder
 } from 'nuxt'
-import session from 'express-session'
 import bodyParser from 'body-parser'
 import cors from 'cors'
-var FileStore = require('session-file-store')(session)
 
 import api from './api'
 
@@ -22,21 +20,8 @@ app.use(bodyParser.urlencoded({
 // cors
 app.use(cors())
 
-app.use(session({
-  secret: '7ipr-bidmarket',
-  resave: false,
-  saveUninitialized: true,
-  resave: false,
-  store: new FileStore(),
-  cookie: {
-    maxAge: 24 * 60 * 60 * 1000
-  }
-}))
 
 app.use(function(req, res, next) {
-  if (!req.session) {
-    return next(new Error('Oh no')) //handle error
-  }
   next() //otherwise continue
 });
 

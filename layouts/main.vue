@@ -1,12 +1,19 @@
 <template>
-    <section>
+    <section v-loading.fullscreen.lock="loading" element-loading-text="拼命加载中" element-loading-spinner="el-icon-loading" element-loading-background="rgba(0, 0, 0, 0.8)">
+        <el-dialog :close-on-click-modal="false" :close-on-press-escape="false" class="dialog" title="登录账号" :show-close="false" :visible.sync="dialogVisible" width="30%" center>
+            <img class="qrCode" :src="qrCode">
+            <span slot="footer" class="dialog-footer">
+            </span>
+        </el-dialog>
         <header>
             <div class="top-nav-wrapper">
                 <div class="nav-logo">wechaty</div>
                 <el-menu active-text-color="#409EFF" default-active="1" class="el-menu-demo" mode="horizontal">
                     <el-menu-item index="1">消息管理</el-menu-item>
                     <el-menu-item index="2">用户管理</el-menu-item>
+                    <div class="userName">用户：{{userInfo.rawObj.NickName}}</div>
                 </el-menu>
+
             </div>
         </header>
         <section class="el-container">
@@ -29,12 +36,35 @@
     </section>
 </template>
 <script>
+import * as api from "~/api/";
 export default {
   data() {
-    return {};
+    return {
+      qrCode: null,
+      dialogVisible: false,
+      loading: true,
+      userInfo: {
+        rawObj: {}
+      }
+    };
   },
   methods: {},
-  mounted() {}
+  async mounted() {
+    let code = await api.init();
+    if (code) {
+      this.qrCode = code;
+      this.dialogVisible = true;
+    } else {
+      this.dialogVisible = false;
+    }
+    let userInfo = await api.getUserInfo();
+    if (userInfo) {
+      this.dialogVisible = false;
+      this.userInfo = userInfo;
+      console.log("userInfo:", userInfo);
+    }
+    this.loading = false;
+  }
 };
 </script>
 
@@ -81,5 +111,15 @@ aside {
     font-weight: bold;
     text-align: center;
   }
+}
+.qrCode {
+  width: 100%;
+}
+.userName {
+  float: right;
+  line-height: 60px;
+  margin-right: 20px;
+  color: #999;
+  font-size: 14px;
 }
 </style>
