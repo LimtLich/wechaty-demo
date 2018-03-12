@@ -176,7 +176,7 @@ router.use(__WEBPACK_IMPORTED_MODULE_1__bot__["a" /* default */]);
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_express__ = __webpack_require__(0);
+/* WEBPACK VAR INJECTION */(function(__dirname) {/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_express__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_express___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_express__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_superagent__ = __webpack_require__(7);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_superagent___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_superagent__);
@@ -199,7 +199,7 @@ const mkdirp = __webpack_require__(11);
 const path = __webpack_require__(12);
 
 //本地存储目录
-const dir = path.join('../../static/images');
+const dir = path.join(__dirname, '../../static/images');
 
 //创建目录
 mkdirp(dir, function (err) {
@@ -223,16 +223,6 @@ bot.on('logout', user => log.info('Bot', `${user.name()} logouted`)).on('login',
 
   // res.json(url)
   console.log(`${url}\n[${code}] Scan QR Code above url to log in: `);
-}).on('message', function (m) {
-  const contact = m.from();
-  const content = m.content();
-  const room = m.room();
-
-  if (/hello/.test(content)) {
-    // bot.say(new MediaMessage('../../static/images/test.jpg'))
-    m.say(new MediaMessage('../../static/images/test.jpg'));
-    m.say("bye.");
-  }
 });
 bot.start();
 
@@ -289,22 +279,18 @@ router.post('/sendText', async (req, res, next) => {
 // say
 router.post('/sendMedia', async (req, res, next) => {
   const imgUrl = req.body.url;
-  // var urlArr = [
-  //   imgUrl
-  // ];
-  // var download = function (url, dir, filename) {
-  //   request.head(url, function (err, res, body) {
-  //     request(url).pipe(fs.createWriteStream(dir + "/" + filename));
-  //   });
-  // };
+  var download = function (url, dir, filename) {
+    __WEBPACK_IMPORTED_MODULE_1_superagent___default.a.head(url, function (err, res, body) {
+      __WEBPACK_IMPORTED_MODULE_1_superagent___default()(url).pipe(fs.createWriteStream(dir + "/" + filename));
+    });
+  };
 
-  // urlArr.map(function (val) {
-  //   download(val, dir, 'test.jpg');
-  // })
-  console.log(imgUrl);
+  download(imgUrl, dir, 'demo.jpg');
+  // bot.say(new MediaMessage(dir + '/demo.jpg'))
+  // console.log(imgUrl)
   // console.log('messageMedia:',MediaMessage)÷
   // bot.say(new MediaMessage('../../static/images/test.jpg'))
-  // res.json("success")
+  res.json("success");
 });
 
 // say
@@ -314,6 +300,7 @@ router.get('/logout', async (req, res, next) => {
 });
 
 /* harmony default export */ __webpack_exports__["a"] = (router);
+/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, "server\\api"))
 
 /***/ }),
 /* 7 */
