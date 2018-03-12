@@ -248,12 +248,26 @@ router.get('/getUserInfo', async (req, res, next) => {
 });
 
 // say
-router.post('/say', async (req, res, next) => {
+router.post('/sendText', async (req, res, next) => {
+  const message = req.body.message;
+  bot.say(message);
+  // bot.logout()
+  res.json("success");
+});
+
+// say
+router.post('/sendMedia', async (req, res, next) => {
   // bot.say('666')
   const imgUrl = req.body.url;
   console.log(imgUrl);
   bot.say(new MediaMessage(imgUrl));
   // bot.logout()
+  res.json("success");
+});
+
+// say
+router.post('/logout', async (req, res, next) => {
+  bot.logout();
   res.json("success");
 });
 

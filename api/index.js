@@ -40,6 +40,10 @@ export function getUserInfo(params) {
   return fetch(`${API_ROOT}/getUserInfo`)
 }
 
-export function say(params) {
-  return post(`${API_ROOT}/say`,params)
+export function sendText(params) {
+  return post(`${API_ROOT}/sendText`,params)
+}
+
+export function sendMedia(params) {
+  return post(`${API_ROOT}/sendMedia`,params)
 }

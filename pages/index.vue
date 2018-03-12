@@ -7,12 +7,12 @@
             <el-tab-pane label="文字消息">
               <el-input type="textarea" :rows="2" placeholder="请输入内容" v-model="message">
               </el-input>
-              <el-checkbox-group v-model="checkList">
+              <!-- <el-checkbox-group v-model="checkList">
                 <el-checkbox label="复选框 A"></el-checkbox>
                 <el-checkbox label="复选框 B"></el-checkbox>
                 <el-checkbox label="复选框 C"></el-checkbox>
-              </el-checkbox-group>
-              <el-button type="primary" @click="say" plain>发送</el-button>
+              </el-checkbox-group> -->
+              <el-button type="primary" @click="sendText" plain>发送</el-button>
             </el-tab-pane>
             <el-tab-pane label="图片消息">
               <el-upload class="avatar-uploader" action="https://jsonplaceholder.typicode.com/posts/" :show-file-list="false" :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload">
@@ -21,7 +21,7 @@
                   <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                 </div>
               </el-upload>
-              <el-button type="primary" @click="say" plain>发送</el-button>
+              <el-button type="primary" @click="sendMedia" plain>发送</el-button>
             </el-tab-pane>
           </el-tabs>
         </el-col>
@@ -57,9 +57,13 @@ export default {
       }
       return isJPG && isLt2M;
     },
-    say() {
+    sendText() {
+      console.log(this.message);
+      api.sendText({ message: this.message });
+    },
+    sendMedia() {
       console.log(this.imageUrl);
-      api.say({ url: this.imageUrl });
+      // api.sendText({ url: this.imageUrl });
     }
   },
   async mounted() {}
