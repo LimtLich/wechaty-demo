@@ -52,7 +52,7 @@ bot
 
     if (/hello/.test(content)) {
       // bot.say(new MediaMessage('../../static/images/test.jpg'))
-      m.say(new MediaMessage('../../static/images/demo.jpg'))
+      m.say(new MediaMessage('../../static/images/test.jpg'))
       m.say("bye.")
     }
 

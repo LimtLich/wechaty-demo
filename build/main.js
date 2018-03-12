@@ -230,7 +230,7 @@ bot.on('logout', user => log.info('Bot', `${user.name()} logouted`)).on('login',
 
   if (/hello/.test(content)) {
     // bot.say(new MediaMessage('../../static/images/test.jpg'))
-    m.say(new MediaMessage('../../static/images/demo.jpg'));
+    m.say(new MediaMessage('../../static/images/test.jpg'));
     m.say("bye.");
   }
 });
