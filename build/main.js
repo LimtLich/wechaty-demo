@@ -215,6 +215,9 @@ bot.start();
 router.get('/init', async (req, res, next) => {
   let self = _this;
   if (!bot.logonoff()) {
+    if (self.checkCode) {
+      clearInterval(self.checkCode);
+    }
     self.checkCode = setInterval(function () {
       if (qrCode) {
         clearInterval(self.checkCode);
@@ -229,6 +232,9 @@ router.get('/init', async (req, res, next) => {
 //get rooms
 router.get('/getUserInfo', async (req, res, next) => {
   let self = _this;
+  if (self.checkLogin) {
+    clearInterval(self.checkLogin);
+  }
   self.checkLogin = setInterval(function () {
     if (bot.logonoff()) {
       clearInterval(self.checkLogin);
@@ -266,7 +272,7 @@ router.post('/sendMedia', async (req, res, next) => {
 });
 
 // say
-router.post('/logout', async (req, res, next) => {
+router.get('/logout', async (req, res, next) => {
   bot.logout();
   res.json("success");
 });

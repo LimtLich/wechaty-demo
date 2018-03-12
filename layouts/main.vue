@@ -11,7 +11,12 @@
                 <el-menu active-text-color="#409EFF" default-active="1" class="el-menu-demo" mode="horizontal">
                     <el-menu-item index="1">消息管理</el-menu-item>
                     <el-menu-item index="2">用户管理</el-menu-item>
-                    <div class="userName">用户：{{userInfo.rawObj.NickName}}</div>
+                    <div class="userMsg">
+                        <div>用户：{{userInfo.rawObj.NickName}}</div>
+                        <div>
+                            <el-button type="info" class="logoutBtn" @click="logout">登出</el-button>
+                        </div>
+                    </div>
                 </el-menu>
 
             </div>
@@ -48,7 +53,13 @@ export default {
       }
     };
   },
-  methods: {},
+  methods: {
+    logout() {
+      api.logout().then(() => {
+        location.reload();
+      });
+    }
+  },
   async mounted() {
     let code = await api.init();
     if (code) {
@@ -115,11 +126,32 @@ aside {
 .qrCode {
   width: 100%;
 }
-.userName {
+.userMsg {
   float: right;
   line-height: 60px;
   margin-right: 20px;
   color: #999;
   font-size: 14px;
+  width: 210px;
+  &:focus {
+    outline: none;
+  }
+  .logoutBtn {
+    height: 30px;
+    line-height: 0px;
+    font-size: 14px;
+    font-weight: normal;
+  }
+  div {
+    float: left;
+  }
+  div:last-child {
+    margin-left: 15px;
+    cursor: pointer;
+    color: #909399;
+    &:hover {
+      color: #f56c6c;
+    }
+  }
 }
 </style>

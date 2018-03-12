@@ -40,6 +40,10 @@ export function getUserInfo(params) {
   return fetch(`${API_ROOT}/getUserInfo`)
 }
 
+export function logout(params) {
+  return fetch(`${API_ROOT}/logout`)
+}
+
 export function sendText(params) {
   return post(`${API_ROOT}/sendText`,params)
 }
