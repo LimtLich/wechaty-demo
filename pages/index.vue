@@ -15,12 +15,13 @@
               <el-button type="primary" @click="sendText" plain class="sendBtn">发送</el-button>
             </el-tab-pane>
             <el-tab-pane label="图片消息">
-              <el-upload class="avatar-uploader" action="https://jsonplaceholder.typicode.com/posts/" :show-file-list="false" :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload">
+              <input type="file" @change="readFile" />
+              <!-- <el-upload class="avatar-uploader" action="https://jsonplaceholder.typicode.com/posts/" :show-file-list="false" :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload">
                 <div class="uploader">
                   <img v-if="imageUrl" :src="imageUrl" class="avatar addBorder">
                   <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                 </div>
-              </el-upload>
+              </el-upload> -->
               <el-button type="primary" @click="sendMedia" plain class="sendBtn">发送</el-button>
             </el-tab-pane>
           </el-tabs>
@@ -32,13 +33,15 @@
 
 <script>
 import * as api from "~/api/";
+import { equal } from "assert";
 export default {
   layout: "main",
   data() {
     return {
       message: "",
       checkList: [],
-      imageUrl: ""
+      imageUrl: "",
+      file: null
     };
   },
   methods: {
@@ -57,13 +60,20 @@ export default {
       }
       return isJPG && isLt2M;
     },
+    readFile(e) {
+      console.log(e);
+      let id = e.target.id;
+      this.file = e.target.files[0];
+    },
     sendText() {
       console.log(this.message);
       api.sendText({ message: this.message });
     },
     sendMedia() {
-      console.log(this.imageUrl);
-      // api.sendText({ url: this.imageUrl });
+      console.log(this.file);
+      if (this.file) {
+        api.sendMedia({ url: this.file });
+      }
     }
   },
   async mounted() {}
@@ -89,7 +99,7 @@ export default {
   position: relative;
   overflow: hidden;
 }
-.sendBtn{
-  margin-top:20px;
+.sendBtn {
+  margin-top: 20px;
 }
 </style>

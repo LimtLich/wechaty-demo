@@ -9,8 +9,23 @@ const router = Router()
 let qrCode = null;
 const {
   Wechaty,
-  Room
+  Room,
+  MediaMessage
 } = require('wechaty')
+const fs = require('fs')
+// const request = require('request')
+const mkdirp = require('mkdirp')
+const path = require('path')
+
+//本地存储目录
+const dir = path.join('../../static/images');
+
+//创建目录
+mkdirp(dir, function (err) {
+  if (err) {
+    console.log(err);
+  }
+});
 
 const bot = Wechaty.instance({
   profile: 'WECHATY_PROFILE'
@@ -30,6 +45,17 @@ bot
 
     // res.json(url)
     console.log(`${url}\n[${code}] Scan QR Code above url to log in: `)
+  }).on('message', function (m) {
+    const contact = m.from()
+    const content = m.content()
+    const room = m.room()
+
+    if (/hello/.test(content)) {
+      // bot.say(new MediaMessage('../../static/images/test.jpg'))
+      m.say(new MediaMessage('../../static/images/demo.jpg'))
+      m.say("bye.")
+    }
+
   })
 bot.start()
 
@@ -85,12 +111,23 @@ router.post('/sendText', async (req, res, next) => {
 
 // say
 router.post('/sendMedia', async (req, res, next) => {
-  // bot.say('666')
   const imgUrl = req.body.url
+  // var urlArr = [
+  //   imgUrl
+  // ];
+  // var download = function (url, dir, filename) {
+  //   request.head(url, function (err, res, body) {
+  //     request(url).pipe(fs.createWriteStream(dir + "/" + filename));
+  //   });
+  // };
+
+  // urlArr.map(function (val) {
+  //   download(val, dir, 'test.jpg');
+  // })
   console.log(imgUrl)
-  bot.say(new MediaMessage(imgUrl))
-  // bot.logout()
-  res.json("success")
+  // console.log('messageMedia:',MediaMessage)÷
+  // bot.say(new MediaMessage('../../static/images/test.jpg'))
+  // res.json("success")
 })
 
 // say
