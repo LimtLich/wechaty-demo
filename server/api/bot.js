@@ -13,7 +13,6 @@ const {
   MediaMessage
 } = require('wechaty')
 const fs = require('fs')
-// const request = require('request')
 const mkdirp = require('mkdirp')
 const path = require('path')
 
@@ -100,19 +99,22 @@ router.post('/sendText', async (req, res, next) => {
 
 // say
 router.post('/sendMedia', async (req, res, next) => {
-  const imgUrl = req.body.url
-  var download = function (url, dir, filename) {
-    request.head(url, function (err, res, body) {
-      request(url).pipe(fs.createWriteStream(dir + "/" + filename));
+  console.log(req.files[0]); // 上传的文件信息
+  let response
+  var des_file = dir + "/" + req.files[0].originalname;
+  fs.readFile(req.files[0].path, function (err, data) {
+    fs.writeFile(des_file, data, function (err) {
+      if (err) {
+        console.log(err);
+      } else {
+        res.json({
+          message: 'File uploaded successfully',
+          filename: req.files[0].originalname
+        })
+      }
     });
-  };
-
-  download(imgUrl, dir, 'demo.jpg');
-  // bot.say(new MediaMessage(dir + '/demo.jpg'))
-  // console.log(imgUrl)
-  // console.log('messageMedia:',MediaMessage)÷
-  // bot.say(new MediaMessage('../../static/images/test.jpg'))
-  res.json("success")
+  });
+  console.log(req)
 })
 
 // say

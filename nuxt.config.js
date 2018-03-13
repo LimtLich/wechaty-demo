@@ -27,6 +27,11 @@ module.exports = {
         href: "https://unpkg.com/element-ui/lib/theme-chalk/index.css"
       }
     ],
+    script: [{
+      src: '//cdn.bootcss.com/jquery/3.2.1/jquery.min.js'
+    },{
+      src: '//cdn.bootcss.com/jquery.form/4.2.2/jquery.form.js'
+    }],
   },
   /*
    ** Customize the progress bar color

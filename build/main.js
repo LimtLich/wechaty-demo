@@ -85,7 +85,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_body_parser___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_body_parser__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_cors__ = __webpack_require__(4);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_cors___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_cors__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__api__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_multer__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_multer___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4_multer__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__api__ = __webpack_require__(6);
 
 
 
@@ -104,6 +106,9 @@ app.use(__WEBPACK_IMPORTED_MODULE_2_body_parser___default.a.urlencoded({
 }));
 // cors
 app.use(__WEBPACK_IMPORTED_MODULE_3_cors___default()());
+app.use(__WEBPACK_IMPORTED_MODULE_4_multer___default()({
+  dest: '/tmp/'
+}).array('image'));
 
 app.use(function (req, res, next) {
   next(); //otherwise continue
@@ -112,10 +117,10 @@ app.use(function (req, res, next) {
 app.set('port', port);
 
 // Import API Routes
-app.use('/api', __WEBPACK_IMPORTED_MODULE_4__api__["a" /* default */]);
+app.use('/api', __WEBPACK_IMPORTED_MODULE_5__api__["a" /* default */]);
 
 // Import and Set Nuxt.js options
-let config = __webpack_require__(13);
+let config = __webpack_require__(14);
 config.dev = !("development" === 'production');
 
 // Init Nuxt.js
@@ -129,7 +134,11 @@ if (config.dev) {
 
 // Give nuxt middleware to express
 app.use(nuxt.render);
+app.post('/file_upload', function (req, res) {
 
+  console.log(req.files[0]); // 上传的文件信息
+
+});
 // Listen the server
 app.listen(port, host);
 console.log('Server listening on ' + host + ':' + port); // eslint-disable-line no-console
@@ -154,12 +163,18 @@ module.exports = require("cors");
 
 /***/ }),
 /* 5 */
+/***/ (function(module, exports) {
+
+module.exports = require("multer");
+
+/***/ }),
+/* 6 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_express__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_express___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_express__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__bot__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__bot__ = __webpack_require__(7);
 
 
 
@@ -172,15 +187,15 @@ router.use(__WEBPACK_IMPORTED_MODULE_1__bot__["a" /* default */]);
 /* harmony default export */ __webpack_exports__["a"] = (router);
 
 /***/ }),
-/* 6 */
+/* 7 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* WEBPACK VAR INJECTION */(function(__dirname) {/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_express__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_express___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_express__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_superagent__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_superagent__ = __webpack_require__(8);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_superagent___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_superagent__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__api_config__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__api_config__ = __webpack_require__(9);
 var _this = this;
 
 
@@ -192,11 +207,10 @@ const {
   Wechaty,
   Room,
   MediaMessage
-} = __webpack_require__(9);
-const fs = __webpack_require__(10);
-// const request = require('request')
-const mkdirp = __webpack_require__(11);
-const path = __webpack_require__(12);
+} = __webpack_require__(10);
+const fs = __webpack_require__(11);
+const mkdirp = __webpack_require__(12);
+const path = __webpack_require__(13);
 
 //本地存储目录
 const dir = path.join(__dirname, '../../static/images');
@@ -278,19 +292,22 @@ router.post('/sendText', async (req, res, next) => {
 
 // say
 router.post('/sendMedia', async (req, res, next) => {
-  const imgUrl = req.body.url;
-  var download = function (url, dir, filename) {
-    __WEBPACK_IMPORTED_MODULE_1_superagent___default.a.head(url, function (err, res, body) {
-      __WEBPACK_IMPORTED_MODULE_1_superagent___default()(url).pipe(fs.createWriteStream(dir + "/" + filename));
+  console.log(req.files[0]); // 上传的文件信息
+  let response;
+  var des_file = dir + "/" + req.files[0].originalname;
+  fs.readFile(req.files[0].path, function (err, data) {
+    fs.writeFile(des_file, data, function (err) {
+      if (err) {
+        console.log(err);
+      } else {
+        res.json({
+          message: 'File uploaded successfully',
+          filename: req.files[0].originalname
+        });
+      }
     });
-  };
-
-  download(imgUrl, dir, 'demo.jpg');
-  // bot.say(new MediaMessage(dir + '/demo.jpg'))
-  // console.log(imgUrl)
-  // console.log('messageMedia:',MediaMessage)÷
-  // bot.say(new MediaMessage('../../static/images/test.jpg'))
-  res.json("success");
+  });
+  console.log(req);
 });
 
 // say
@@ -300,16 +317,16 @@ router.get('/logout', async (req, res, next) => {
 });
 
 /* harmony default export */ __webpack_exports__["a"] = (router);
-/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, "server\\api"))
+/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, "server/api"))
 
 /***/ }),
-/* 7 */
+/* 8 */
 /***/ (function(module, exports) {
 
 module.exports = require("superagent");
 
 /***/ }),
-/* 8 */
+/* 9 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -318,31 +335,31 @@ const API_ROOT =  true ? '/api' : '/api';
 
 
 /***/ }),
-/* 9 */
+/* 10 */
 /***/ (function(module, exports) {
 
 module.exports = require("wechaty");
 
 /***/ }),
-/* 10 */
+/* 11 */
 /***/ (function(module, exports) {
 
 module.exports = require("fs");
 
 /***/ }),
-/* 11 */
+/* 12 */
 /***/ (function(module, exports) {
 
 module.exports = require("mkdirp");
 
 /***/ }),
-/* 12 */
+/* 13 */
 /***/ (function(module, exports) {
 
 module.exports = require("path");
 
 /***/ }),
-/* 13 */
+/* 14 */
 /***/ (function(module, exports) {
 
 module.exports = {
@@ -368,6 +385,11 @@ module.exports = {
     }, {
       rel: 'stylesheet',
       href: "https://unpkg.com/element-ui/lib/theme-chalk/index.css"
+    }],
+    script: [{
+      src: '//cdn.bootcss.com/jquery/3.2.1/jquery.min.js'
+    }, {
+      src: '//cdn.bootcss.com/jquery.form/4.2.2/jquery.form.js'
     }]
   },
   /*

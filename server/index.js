@@ -5,7 +5,7 @@ import {
 } from 'nuxt'
 import bodyParser from 'body-parser'
 import cors from 'cors'
-
+import multer from 'multer'
 import api from './api'
 
 const app = express()
@@ -19,9 +19,11 @@ app.use(bodyParser.urlencoded({
 }))
 // cors
 app.use(cors())
+app.use(multer({
+  dest: '/tmp/'
+}).array('image'));
 
-
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
   next() //otherwise continue
 });
 
@@ -45,7 +47,12 @@ if (config.dev) {
 
 // Give nuxt middleware to express
 app.use(nuxt.render)
+app.post('/file_upload', function (req, res) {
 
+  console.log(req.files[0]); // 上传的文件信息
+
+
+})
 // Listen the server
 app.listen(port, host)
 console.log('Server listening on ' + host + ':' + port) // eslint-disable-line no-console

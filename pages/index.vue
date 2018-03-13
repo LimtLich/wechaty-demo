@@ -16,12 +16,18 @@
             </el-tab-pane>
             <el-tab-pane label="图片消息">
               <!-- <input type="file" @change="readFile" /> -->
-              <el-upload class="avatar-uploader" action="https://jsonplaceholder.typicode.com/posts/" :show-file-list="false" :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload">
+              <form id="themeForm" action="/api/sendMedia" target="submitFrame" method="post" enctype="multipart/form-data">
+                <iframe id="submitFrame" style="display: none;width:0; height:0" name="submitFrame" src="about:blank"></iframe>
+                <input type="file" name="image" size="50" />
+                <br />
+                <input type="submit" value="上传文件" />
+              </form>
+              <!-- <el-upload class="avatar-uploader" action="https://jsonplaceholder.typicode.com/posts/" :show-file-list="false" :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload">
                 <div class="uploader">
                   <img v-if="imageUrl" :src="imageUrl" class="avatar addBorder">
                   <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                 </div>
-              </el-upload>
+              </el-upload> -->
               <el-button type="primary" @click="sendMedia" plain class="sendBtn">发送</el-button>
             </el-tab-pane>
           </el-tabs>
@@ -70,13 +76,20 @@ export default {
       api.sendText({ message: this.message });
     },
     sendMedia() {
-      console.log(this.imageUrl);
-      if (this.imageUrl) {
-        api.sendMedia({ url: this.imageUrl });
+      console.log("url:", this.file);
+      if (this.file) {
+        api.sendMedia({ file: this.file });
       }
     }
   },
-  async mounted() {}
+  async mounted() {
+    $("#themeForm").ajaxForm(function(data) {
+      console.log('data:',data)
+      // let themeImgName = data.results[0].filePath;
+      // themeImgName = themeImgName.split("/").pop();
+      // alert(themeImgName);
+    });
+  }
 };
 </script>
 
