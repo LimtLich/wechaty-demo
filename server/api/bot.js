@@ -27,7 +27,7 @@ mkdirp(dir, function (err) {
 });
 
 const bot = Wechaty.instance({
-  profile: 'WECHATY_PROFILE'
+  profile: './profile/WECHATY_PROFILE'
 })
 bot
   .on('logout', user => log.info('Bot', `${user.name()} logouted`))
