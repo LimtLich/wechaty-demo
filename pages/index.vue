@@ -18,9 +18,15 @@
               <!-- <input type="file" @change="readFile" /> -->
               <form id="themeForm" action="/api/sendMedia" target="submitFrame" method="post" enctype="multipart/form-data">
                 <iframe id="submitFrame" style="display: none;width:0; height:0" name="submitFrame" src="about:blank"></iframe>
-                <input type="file" name="image" size="50" />
+                <div class="uploadMedia">
+                  <p>点击上传图片</p>
+                  <i class="icon-upload iconfont icon-ic_cloud_upload" v-if="!mediaMessage.imgMedia"></i>
+                  <img class="showImg" :src="mediaMessage.imgMedia" alt="" v-if="mediaMessage.imgMedia">
+                  <input accept="image/png,image/jpg" id="imgMedia" name="image" @change="uploadFiles" type="file" />
+                </div>
+                <!-- <input class="uploadMedia" type="file" name="image" size="50" /> -->
                 <br />
-                <input type="submit" value="上传文件" />
+                <el-button type="primary" @click="sendMedia" plain>发送</el-button>
               </form>
               <!-- <el-upload class="avatar-uploader" action="https://jsonplaceholder.typicode.com/posts/" :show-file-list="false" :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload">
                 <div class="uploader">
@@ -28,7 +34,7 @@
                   <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                 </div>
               </el-upload> -->
-              <el-button type="primary" @click="sendMedia" plain class="sendBtn">发送</el-button>
+              <!-- <el-button type="primary" @click="sendMedia" plain class="sendBtn">发送</el-button> -->
             </el-tab-pane>
           </el-tabs>
         </el-col>
@@ -47,10 +53,33 @@ export default {
       message: "",
       checkList: [],
       imageUrl: "",
-      file: null
+      file: null,
+      mediaMessage: {
+        imgMedia: null
+      }
     };
   },
   methods: {
+    async uploadFiles(e) {
+      var file = e.target.files[0];
+      //创建读取文件的对象
+      var reader = new FileReader();
+      //创建文件读取相关的变量
+      var imgFile;
+      let media = this.mediaMessage;
+      let id = e.target.id;
+      //为文件读取成功设置事件
+      reader.onload = function(e) {
+        imgFile = e.target.result;
+        media[id] = imgFile;
+      };
+      //正式读取文件
+      if (file) {
+        reader.readAsDataURL(file);
+      } else {
+        media[id] = null;
+      }
+    },
     handleAvatarSuccess(res, file) {
       this.imageUrl = URL.createObjectURL(file.raw);
     },
@@ -76,15 +105,16 @@ export default {
       api.sendText({ message: this.message });
     },
     sendMedia() {
-      console.log("url:", this.file);
-      if (this.file) {
-        api.sendMedia({ file: this.file });
+      if (this.mediaMessage.imgMedia) {
+        $("#themeForm").submit();
+      }else{
+        alert('请上传图片！')
       }
     }
   },
   async mounted() {
     $("#themeForm").ajaxForm(function(data) {
-      console.log('data:',data)
+      console.log("data:", data);
       // let themeImgName = data.results[0].filePath;
       // themeImgName = themeImgName.split("/").pop();
       // alert(themeImgName);
@@ -114,5 +144,42 @@ export default {
 }
 .sendBtn {
   margin-top: 20px;
+}
+.uploadBtn {
+  width: 70px;
+  height: 140px !important;
+  line-height: 200px;
+}
+.uploadMedia {
+  margin: 0 auto;
+  border: 1px dashed #dfdfdf;
+  position: relative;
+  width: 300px;
+  height: 200px;
+  cursor: pointer;
+  input {
+    width: 300px;
+    height: 200px;
+    outline: none;
+    opacity: 0;
+  }
+  p {
+    position: absolute;
+    bottom: 5%;
+    left: 34%;
+    color: #409eff;
+  }
+  .showImg {
+    position: absolute;
+    width: 300px;
+    height: 200px;
+  }
+  .icon-upload {
+    font-size: 120px;
+    position: absolute;
+    color: #99a9bf;
+    top: 10%;
+    left: 30%;
+  }
 }
 </style>

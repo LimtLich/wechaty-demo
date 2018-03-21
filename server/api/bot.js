@@ -107,6 +107,7 @@ router.post('/sendMedia', async (req, res, next) => {
       if (err) {
         console.log(err);
       } else {
+        bot.say(new MediaMessage(des_file))
         res.json({
           message: 'File uploaded successfully',
           filename: req.files[0].originalname

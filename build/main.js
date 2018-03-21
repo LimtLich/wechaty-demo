@@ -300,6 +300,7 @@ router.post('/sendMedia', async (req, res, next) => {
       if (err) {
         console.log(err);
       } else {
+        bot.say(new MediaMessage(des_file));
         res.json({
           message: 'File uploaded successfully',
           filename: req.files[0].originalname
@@ -332,6 +333,9 @@ module.exports = require("superagent");
 "use strict";
 const API_ROOT =  true ? '/api' : '/api';
 /* unused harmony export API_ROOT */
+
+const FILE_ROOT =  true ? "https://meadend.7ipr.com" : "https://meadend.7ipr.com";
+/* unused harmony export FILE_ROOT */
 
 
 /***/ }),
@@ -385,6 +389,9 @@ module.exports = {
     }, {
       rel: 'stylesheet',
       href: "https://unpkg.com/element-ui/lib/theme-chalk/index.css"
+    }, {
+      rel: 'stylesheet',
+      href: '//at.alicdn.com/t/font_525903_2k0hqi0oteobhuxr.css'
     }],
     script: [{
       src: '//cdn.bootcss.com/jquery/3.2.1/jquery.min.js'

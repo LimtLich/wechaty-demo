@@ -2,7 +2,8 @@ import axios from 'axios'
 import request from 'superagent'
 import qs from 'query-string'
 import {
-  API_ROOT
+  API_ROOT,
+  FILE_ROOT
 } from './config.js'
 
 axios.defaults.headers['Content-Type'] = 'application/x-www-form-urlencoded; charset=UTF-8'
@@ -50,4 +51,8 @@ export function sendText(params) {
 
 export function sendMedia(params) {
   return post(`${API_ROOT}/sendMedia`,params)
+}
+
+export function uploadFiles(file) {
+  return request.post(`${FILE_ROOT}/ipr/fastdfs/upload`).attach('file', file).then(res => res.body)
 }

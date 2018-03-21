@@ -25,11 +25,15 @@ module.exports = {
       {
         rel: 'stylesheet',
         href: "https://unpkg.com/element-ui/lib/theme-chalk/index.css"
+      },
+      {
+        rel: 'stylesheet',
+        href: '//at.alicdn.com/t/font_525903_2k0hqi0oteobhuxr.css'
       }
     ],
     script: [{
       src: '//cdn.bootcss.com/jquery/3.2.1/jquery.min.js'
-    },{
+    }, {
       src: '//cdn.bootcss.com/jquery.form/4.2.2/jquery.form.js'
     }],
   },

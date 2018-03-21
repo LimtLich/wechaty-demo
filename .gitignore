@@ -9,3 +9,11 @@ npm-debug.log
 
 # Nuxt generate
 dist
+.idea/
+.DS_Store
+yarn.*
+packjson-lock.json
+build/
+sessions
+.vscode/settings.json
+static/images/
