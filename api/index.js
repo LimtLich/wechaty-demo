@@ -41,6 +41,10 @@ export function getUserInfo(params) {
   return fetch(`${API_ROOT}/getUserInfo`)
 }
 
+export function getRooms() {
+  return fetch(`${API_ROOT}/getRooms`)
+}
+
 export function logout(params) {
   return fetch(`${API_ROOT}/logout`)
 }

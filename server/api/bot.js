@@ -44,6 +44,12 @@ bot
 
     // res.json(url)
     console.log(`${url}\n[${code}] Scan QR Code above url to log in: `)
+  }).on('message', async m => {
+    const room = m.room()
+    if (room) {
+      const topic = room.topic()
+      console.log(`room topic is : ${topic}`)
+    }
   })
 bot.start()
 
@@ -65,7 +71,7 @@ router.get('/init', async (req, res, next) => {
   }
 })
 
-//get rooms
+//get userinfo
 router.get('/getUserInfo', async (req, res, next) => {
   let self = this
   if (self.checkLogin) {
@@ -76,49 +82,69 @@ router.get('/getUserInfo', async (req, res, next) => {
       clearInterval(self.checkLogin)
       const user = bot.self()
       res.json(user)
-      // setTimeout(async function () {
-      //   const user = bot.self()
-      //   const roomList = await Room.findAll()
-      //   res.json({
-      //     user: user.name(),
-      //     roomList
-      //   })
-      // }, 10 * 1000)
     }
     console.log(bot.logonoff())
   }, 1000)
 })
 
+//getrooms
+router.get('/getRooms', async (req, res, next) => {
+  // setTimeout(async function () {
+  //   const roomList = await Room.findAll()
+  //   res.json(roomList)
+  // }, 10 * 1000)
+  Room.findAll().then(function (roomList) {
+    res.json(roomList.map(e => e.name = e.topic()))
+  })
+})
+
 // say
 router.post('/sendText', async (req, res, next) => {
   const message = req.body.message
-  bot.say(message)
-  // bot.logout()
-  res.json("success")
+  const rooms = req.body.rooms
+  for (let i = 0; i < rooms.length; i++) {
+    let room = await Room.find({
+      topic: rooms[i]
+    })
+    await room.say(message)
+  }
+  res.json({
+    message: '发送成功'
+  })
 })
 
 // say
 router.post('/sendMedia', async (req, res, next) => {
   console.log(req.files[0]); // 上传的文件信息
+  const roomObj = req.body;
+  let rooms = []
+  for (var i in roomObj) {
+    rooms.push(roomObj[i]);
+  }
   let response
   var des_file = dir + "/" + req.files[0].originalname;
   fs.readFile(req.files[0].path, function (err, data) {
-    fs.writeFile(des_file, data, function (err) {
+    fs.writeFile(des_file, data, async function (err) {
       if (err) {
         console.log(err);
       } else {
-        bot.say(new MediaMessage(des_file))
+        for (let i = 0; i < rooms.length; i++) {
+          let room = await Room.find({
+            topic: rooms[i]
+          })
+          await room.say(new MediaMessage(des_file))
+        }
+        // bot.say(new MediaMessage(des_file))
         res.json({
-          message: 'File uploaded successfully',
+          message: '发送成功',
           filename: req.files[0].originalname
         })
       }
     });
   });
-  console.log(req)
 })
 
-// say
+// logout
 router.get('/logout', async (req, res, next) => {
   bot.logout()
   res.json("success")

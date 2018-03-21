@@ -1,5 +1,5 @@
 <template>
-  <section class="container">
+  <section class="container" v-loading.fullscreen.lock="loading" element-loading-text="拼命加载中" element-loading-spinner="el-icon-loading" element-loading-background="rgba(0, 0, 0, 0.8)">
     <div>
       <el-row>
         <el-col :span="24">
@@ -7,38 +7,35 @@
             <el-tab-pane label="文字消息">
               <el-input type="textarea" :rows="2" placeholder="请输入内容" v-model="message">
               </el-input>
-              <!-- <el-checkbox-group v-model="checkList">
-                <el-checkbox label="复选框 A"></el-checkbox>
-                <el-checkbox label="复选框 B"></el-checkbox>
-                <el-checkbox label="复选框 C"></el-checkbox>
-              </el-checkbox-group> -->
-              <el-button type="primary" @click="sendText" plain class="sendBtn">发送</el-button>
+              <el-button type="primary" @click="showSend('text')" plain class="sendBtn">发送</el-button>
             </el-tab-pane>
             <el-tab-pane label="图片消息">
-              <!-- <input type="file" @change="readFile" /> -->
               <form id="themeForm" action="/api/sendMedia" target="submitFrame" method="post" enctype="multipart/form-data">
                 <iframe id="submitFrame" style="display: none;width:0; height:0" name="submitFrame" src="about:blank"></iframe>
                 <div class="uploadMedia">
                   <p>点击上传图片</p>
                   <i class="icon-upload iconfont icon-ic_cloud_upload" v-if="!mediaMessage.imgMedia"></i>
                   <img class="showImg" :src="mediaMessage.imgMedia" alt="" v-if="mediaMessage.imgMedia">
+                  <input v-for="item in checkList" :name="item" :key="item" :value="item" type="hidden" />
                   <input accept="image/png,image/jpg" id="imgMedia" name="image" @change="uploadFiles" type="file" />
                 </div>
-                <!-- <input class="uploadMedia" type="file" name="image" size="50" /> -->
                 <br />
-                <el-button type="primary" @click="sendMedia" plain>发送</el-button>
+                <el-button type="primary" @click="showSend('media')" plain>发送</el-button>
               </form>
-              <!-- <el-upload class="avatar-uploader" action="https://jsonplaceholder.typicode.com/posts/" :show-file-list="false" :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload">
-                <div class="uploader">
-                  <img v-if="imageUrl" :src="imageUrl" class="avatar addBorder">
-                  <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-                </div>
-              </el-upload> -->
-              <!-- <el-button type="primary" @click="sendMedia" plain class="sendBtn">发送</el-button> -->
             </el-tab-pane>
           </el-tabs>
         </el-col>
       </el-row>
+      <el-dialog title="选择接收信息对象" :visible.sync="dialogVisible" width="50%">
+        <el-checkbox-group v-model="checkList" size="small">
+          <el-checkbox :label="item?item:'群聊'" border v-for="item in rooms" :key="item.id"></el-checkbox>
+        </el-checkbox-group>
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="dialogVisible = false">取 消</el-button>
+          <el-button v-if="type=='text'" type="primary" @click="sendText">确 定</el-button>
+          <el-button v-if="type=='media'" type="primary" @click="sendMedia">确 定</el-button>
+        </span>
+      </el-dialog>
     </div>
   </section>
 </template>
@@ -54,12 +51,21 @@ export default {
       checkList: [],
       imageUrl: "",
       file: null,
+      dialogVisible: false,
       mediaMessage: {
         imgMedia: null
-      }
+      },
+      rooms: [],
+      loading: false,
+      type: "text"
     };
   },
   methods: {
+    initData() {
+      this.checkList = [];
+      this.message = "";
+      this.mediaMessage.imgMedia = null;
+    },
     async uploadFiles(e) {
       var file = e.target.files[0];
       //创建读取文件的对象
@@ -80,41 +86,53 @@ export default {
         media[id] = null;
       }
     },
-    handleAvatarSuccess(res, file) {
-      this.imageUrl = URL.createObjectURL(file.raw);
-    },
-    beforeAvatarUpload(file) {
-      const isJPG = file.type === "image/jpeg";
-      const isLt2M = file.size / 1024 / 1024 < 2;
-
-      if (!isJPG) {
-        this.$message.error("上传头像图片只能是 JPG 格式!");
-      }
-      if (!isLt2M) {
-        this.$message.error("上传头像图片大小不能超过 2MB!");
-      }
-      return isJPG && isLt2M;
-    },
     readFile(e) {
       console.log(e);
       let id = e.target.id;
       this.file = e.target.files[0];
     },
+    showSend(e) {
+      let that = this;
+      that.type = e;
+      if (
+        (e == "text" && that.message) ||
+        (e == "media" && that.mediaMessage.imgMedia)
+      ) {
+        that.loading = true;
+        api.getRooms().then(rooms => {
+          that.rooms = rooms;
+          that.loading = false;
+          that.dialogVisible = true;
+          console.log("rooms:", rooms);
+        });
+      }
+    },
     sendText() {
-      console.log(this.message);
-      api.sendText({ message: this.message });
+      console.log("text");
+      console.log("checklist:", this.checkList);
+      api
+        .sendText({ message: this.message, rooms: this.checkList })
+        .then(res => {
+          if (res.message) {
+            this.dialogVisible = false;
+            this.initData();
+          }
+        });
     },
     sendMedia() {
+      console.log("media");
+      console.log("checklist:", this.checkList);
       if (this.mediaMessage.imgMedia) {
         $("#themeForm").submit();
-      }else{
-        alert('请上传图片！')
       }
     }
   },
   async mounted() {
+    let that = this;
     $("#themeForm").ajaxForm(function(data) {
       console.log("data:", data);
+      that.dialogVisible = false;
+      that.initData();
       // let themeImgName = data.results[0].filePath;
       // themeImgName = themeImgName.split("/").pop();
       // alert(themeImgName);
@@ -134,6 +152,10 @@ export default {
   height: 178px;
   line-height: 178px;
   text-align: center;
+}
+.el-checkbox {
+  margin-left: 10px;
+  margin-bottom: 15px;
 }
 .uploader {
   border: 1px dashed #d9d9d9;
@@ -164,9 +186,10 @@ export default {
     opacity: 0;
   }
   p {
+    font-size: 14px;
     position: absolute;
-    bottom: 5%;
-    left: 34%;
+    bottom: 10%;
+    left: 36%;
     color: #409eff;
   }
   .showImg {
