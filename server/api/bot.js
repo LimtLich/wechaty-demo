@@ -6,6 +6,8 @@ import {
   HOST_ROOT
 } from '../../api/config'
 const router = Router()
+const user = require('../../db/models/user')
+const record = require('../../db/models/record')
 let qrCode = null;
 const {
   Wechaty,
@@ -102,12 +104,32 @@ router.get('/getRooms', async (req, res, next) => {
 router.post('/sendText', async (req, res, next) => {
   const message = req.body.message
   const rooms = req.body.rooms
-  for (let i = 0; i < rooms.length; i++) {
+  if (typeof (rooms) == "string") {
     let room = await Room.find({
-      topic: rooms[i]
+      topic: rooms
     })
     await room.say(message)
+    record.create({
+      from: bot.self().id,
+      to: room.id,
+      type: 'text',
+      content: message
+    })
+  } else {
+    for (let i = 0; i < rooms.length; i++) {
+      let room = await Room.find({
+        topic: rooms[i]
+      })
+      await room.say(message)
+      record.create({
+        from: bot.self().id,
+        to: room.id,
+        type: 'text',
+        content: message
+      })
+    }
   }
+
   res.json({
     message: '发送成功'
   })

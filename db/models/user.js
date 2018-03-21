@@ -2,8 +2,8 @@ const Sequelize = require('sequelize')
 const sequelize = require('../sequelize')
 
 const User = sequelize.define('User', {
-  username: Sequelize.STRING,
-  birthday: Sequelize.DATE
+  userName: Sequelize.STRING,
+  userId: Sequelize.INTEGER
 });
 
 

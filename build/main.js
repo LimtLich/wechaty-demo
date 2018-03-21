@@ -62,7 +62,7 @@ module.exports =
 /******/ 	__webpack_require__.p = "/";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 1);
+/******/ 	return __webpack_require__(__webpack_require__.s = 3);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -73,21 +73,40 @@ module.exports = require("express");
 
 /***/ }),
 /* 1 */
+/***/ (function(module, exports) {
+
+module.exports = require("sequelize");
+
+/***/ }),
+/* 2 */
+/***/ (function(module, exports, __webpack_require__) {
+
+const Sequelize = __webpack_require__(1);
+const sequelize = new Sequelize('wxbot', 'root', 'root', {
+  host: '127.0.0.1',
+  dialect: 'mysql',
+  logging: false
+});
+
+module.exports = sequelize;
+
+/***/ }),
+/* 3 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_express__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_express___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_express__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_nuxt__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_nuxt__ = __webpack_require__(4);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_nuxt___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_nuxt__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_body_parser__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_body_parser__ = __webpack_require__(5);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_body_parser___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_body_parser__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_cors__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_cors__ = __webpack_require__(6);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_cors___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_cors__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_multer__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_multer__ = __webpack_require__(7);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_multer___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4_multer__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__api__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__api__ = __webpack_require__(8);
 
 
 
@@ -120,7 +139,7 @@ app.set('port', port);
 app.use('/api', __WEBPACK_IMPORTED_MODULE_5__api__["a" /* default */]);
 
 // Import and Set Nuxt.js options
-let config = __webpack_require__(14);
+let config = __webpack_require__(18);
 config.dev = !("development" === 'production');
 
 // Init Nuxt.js
@@ -144,37 +163,37 @@ app.listen(port, host);
 console.log('Server listening on ' + host + ':' + port); // eslint-disable-line no-console
 
 /***/ }),
-/* 2 */
+/* 4 */
 /***/ (function(module, exports) {
 
 module.exports = require("nuxt");
 
 /***/ }),
-/* 3 */
+/* 5 */
 /***/ (function(module, exports) {
 
 module.exports = require("body-parser");
 
 /***/ }),
-/* 4 */
+/* 6 */
 /***/ (function(module, exports) {
 
 module.exports = require("cors");
 
 /***/ }),
-/* 5 */
+/* 7 */
 /***/ (function(module, exports) {
 
 module.exports = require("multer");
 
 /***/ }),
-/* 6 */
+/* 8 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_express__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_express___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_express__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__bot__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__bot__ = __webpack_require__(9);
 
 
 
@@ -187,30 +206,32 @@ router.use(__WEBPACK_IMPORTED_MODULE_1__bot__["a" /* default */]);
 /* harmony default export */ __webpack_exports__["a"] = (router);
 
 /***/ }),
-/* 7 */
+/* 9 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* WEBPACK VAR INJECTION */(function(__dirname) {/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_express__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_express___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_express__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_superagent__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_superagent__ = __webpack_require__(10);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_superagent___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_superagent__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__api_config__ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__api_config__ = __webpack_require__(11);
 var _this = this;
 
 
 
 
 const router = Object(__WEBPACK_IMPORTED_MODULE_0_express__["Router"])();
+const user = __webpack_require__(12);
+const record = __webpack_require__(13);
 let qrCode = null;
 const {
   Wechaty,
   Room,
   MediaMessage
-} = __webpack_require__(10);
-const fs = __webpack_require__(11);
-const mkdirp = __webpack_require__(12);
-const path = __webpack_require__(13);
+} = __webpack_require__(14);
+const fs = __webpack_require__(15);
+const mkdirp = __webpack_require__(16);
+const path = __webpack_require__(17);
 
 //本地存储目录
 const dir = path.join(__dirname, '../../static/images');
@@ -295,12 +316,32 @@ router.get('/getRooms', async (req, res, next) => {
 router.post('/sendText', async (req, res, next) => {
   const message = req.body.message;
   const rooms = req.body.rooms;
-  for (let i = 0; i < rooms.length; i++) {
+  if (typeof rooms == "string") {
     let room = await Room.find({
-      topic: rooms[i]
+      topic: rooms
     });
     await room.say(message);
+    record.create({
+      from: bot.self().id,
+      to: room.id,
+      type: 'text',
+      content: message
+    });
+  } else {
+    for (let i = 0; i < rooms.length; i++) {
+      let room = await Room.find({
+        topic: rooms[i]
+      });
+      await room.say(message);
+      record.create({
+        from: bot.self().id,
+        to: room.id,
+        type: 'text',
+        content: message
+      });
+    }
   }
+
   res.json({
     message: '发送成功'
   });
@@ -347,13 +388,13 @@ router.get('/logout', async (req, res, next) => {
 /* WEBPACK VAR INJECTION */}.call(__webpack_exports__, "server/api"))
 
 /***/ }),
-/* 8 */
+/* 10 */
 /***/ (function(module, exports) {
 
 module.exports = require("superagent");
 
 /***/ }),
-/* 9 */
+/* 11 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -365,31 +406,61 @@ const FILE_ROOT =  true ? "https://meadend.7ipr.com" : "https://meadend.7ipr.com
 
 
 /***/ }),
-/* 10 */
+/* 12 */
+/***/ (function(module, exports, __webpack_require__) {
+
+const Sequelize = __webpack_require__(1);
+const sequelize = __webpack_require__(2);
+
+const User = sequelize.define('User', {
+  userName: Sequelize.STRING,
+  userId: Sequelize.INTEGER
+});
+
+module.exports = User;
+
+/***/ }),
+/* 13 */
+/***/ (function(module, exports, __webpack_require__) {
+
+const Sequelize = __webpack_require__(1);
+const sequelize = __webpack_require__(2);
+
+const Record = sequelize.define('Record', {
+  from: Sequelize.STRING,
+  to: Sequelize.STRING,
+  type: Sequelize.STRING,
+  content: Sequelize.STRING
+});
+
+module.exports = Record;
+
+/***/ }),
+/* 14 */
 /***/ (function(module, exports) {
 
 module.exports = require("wechaty");
 
 /***/ }),
-/* 11 */
+/* 15 */
 /***/ (function(module, exports) {
 
 module.exports = require("fs");
 
 /***/ }),
-/* 12 */
+/* 16 */
 /***/ (function(module, exports) {
 
 module.exports = require("mkdirp");
 
 /***/ }),
-/* 13 */
+/* 17 */
 /***/ (function(module, exports) {
 
 module.exports = require("path");
 
 /***/ }),
-/* 14 */
+/* 18 */
 /***/ (function(module, exports) {
 
 module.exports = {
