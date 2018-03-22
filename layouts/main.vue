@@ -23,14 +23,14 @@
         </header>
         <section class="el-container">
             <aside>
-                <el-menu class="el-menu-vertical-demo" default-active="1">
-                    <el-menu-item index="1">
+                <el-menu class="el-menu-vertical-demo" :router="true">
+                    <el-menu-item index="/">
                         <i class="el-icon-menu"></i>
                         <span slot="title">消息发送</span>
                     </el-menu-item>
-                    <el-menu-item index="2">
+                    <el-menu-item index="records">
                         <i class="el-icon-setting"></i>
-                        <span slot="title">消息配置</span>
+                        <span slot="title">消息记录</span>
                     </el-menu-item>
                 </el-menu>
             </aside>

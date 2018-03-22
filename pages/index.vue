@@ -5,7 +5,7 @@
         <el-col :span="24">
           <el-tabs type="border-card">
             <el-tab-pane label="文字消息">
-              <el-input type="textarea" :rows="2" placeholder="请输入内容" v-model="message">
+              <el-input class="textArea" type="textarea" :rows="5" placeholder="请输入内容" size="small" v-model="message">
               </el-input>
               <el-button type="primary" @click="showSend('text')" plain class="sendBtn">发送</el-button>
             </el-tab-pane>
@@ -16,11 +16,12 @@
                   <p>点击上传图片</p>
                   <i class="icon-upload iconfont icon-ic_cloud_upload" v-if="!mediaMessage.imgMedia"></i>
                   <img class="showImg" :src="mediaMessage.imgMedia" alt="" v-if="mediaMessage.imgMedia">
-                  <input v-for="item in checkList" :name="item" :key="item" :value="item" type="hidden" />
+                  <input type="hidden" id="imageUrl" name="imageUrl" />
+                  <input v-for="item in checkList" name="roomList[]" :key="item" :value="item" type="hidden" />
                   <input accept="image/png,image/jpg" id="imgMedia" name="image" @change="uploadFiles" type="file" />
                 </div>
                 <br />
-                <el-button type="primary" @click="showSend('media')" plain>发送</el-button>
+                <el-button type="primary" @click="showSend('media')" class="sendBtn" plain>发送</el-button>
               </form>
             </el-tab-pane>
           </el-tabs>
@@ -49,7 +50,7 @@ export default {
     return {
       message: "",
       checkList: [],
-      imageUrl: "",
+      currentFile: null,
       file: null,
       dialogVisible: false,
       mediaMessage: {
@@ -68,6 +69,7 @@ export default {
     },
     async uploadFiles(e) {
       var file = e.target.files[0];
+      this.currentFile = file;
       //创建读取文件的对象
       var reader = new FileReader();
       //创建文件读取相关的变量
@@ -108,8 +110,6 @@ export default {
       }
     },
     sendText() {
-      console.log("text");
-      console.log("checklist:", this.checkList);
       api
         .sendText({ message: this.message, rooms: this.checkList })
         .then(res => {
@@ -120,10 +120,14 @@ export default {
         });
     },
     sendMedia() {
-      console.log("media");
-      console.log("checklist:", this.checkList);
-      if (this.mediaMessage.imgMedia) {
-        $("#themeForm").submit();
+      let that = this;
+      if (that.mediaMessage.imgMedia) {
+        api.uploadFiles(that.currentFile).then(res => {
+          if (res.code == 200) {
+            document.getElementById("imageUrl").value = res.data;
+            $("#themeForm").submit();
+          }
+        });
       }
     }
   },
@@ -145,6 +149,10 @@ export default {
 .uploader:hover {
   border-color: #409eff;
 }
+.textArea {
+  width: 50%;
+  margin: 10px auto;
+}
 .avatar-uploader-icon {
   font-size: 28px;
   color: #8c939d;
@@ -165,7 +173,9 @@ export default {
   overflow: hidden;
 }
 .sendBtn {
-  margin-top: 20px;
+  display: block;
+  margin: 5px auto;
+  width:100px;
 }
 .uploadBtn {
   width: 70px;

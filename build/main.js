@@ -350,11 +350,9 @@ router.post('/sendText', async (req, res, next) => {
 // say
 router.post('/sendMedia', async (req, res, next) => {
   console.log(req.files[0]); // 上传的文件信息
-  const roomObj = req.body;
-  let rooms = [];
-  for (var i in roomObj) {
-    rooms.push(roomObj[i]);
-  }
+  const rooms = req.body.roomList;
+  const imgUrl = req.body.imageUrl;
+  // let rooms = []
   let response;
   var des_file = dir + "/" + req.files[0].originalname;
   fs.readFile(req.files[0].path, function (err, data) {
@@ -367,6 +365,12 @@ router.post('/sendMedia', async (req, res, next) => {
             topic: rooms[i]
           });
           await room.say(new MediaMessage(des_file));
+          record.create({
+            from: bot.self().id,
+            to: room.id,
+            type: 'media',
+            content: imgUrl
+          });
         }
         // bot.say(new MediaMessage(des_file))
         res.json({
