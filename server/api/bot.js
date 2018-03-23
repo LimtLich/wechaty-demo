@@ -109,9 +109,12 @@ router.post('/sendText', async (req, res, next) => {
       topic: rooms
     })
     await room.say(message)
+    console.log('room:', room)
     record.create({
-      from: bot.self().id,
-      to: room.id,
+      from_name: bot.self().obj.name,
+      from_uin: bot.self().obj.id,
+      to_name: room.obj.topic,
+      to_uin: room.obj.id,
       type: 'text',
       content: message
     })
@@ -122,8 +125,10 @@ router.post('/sendText', async (req, res, next) => {
       })
       await room.say(message)
       record.create({
-        from: bot.self().id,
-        to: room.id,
+        from_name: bot.self().obj.name,
+        from_uin: bot.self().obj.id,
+        to_name: room.obj.topic,
+        to_uin: room.obj.id,
         type: 'text',
         content: message
       })
@@ -153,9 +158,12 @@ router.post('/sendMedia', async (req, res, next) => {
             topic: rooms[i]
           })
           await room.say(new MediaMessage(des_file))
+          console.log('room:', room)
           record.create({
-            from: bot.self().id,
-            to: room.id,
+            from_name: bot.self().obj.name,
+            from_uin: bot.self().obj.id,
+            to_name: room.obj.topic,
+            to_uin: room.obj.id,
             type: 'media',
             content: imgUrl
           })

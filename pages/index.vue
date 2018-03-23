@@ -105,7 +105,6 @@ export default {
           that.rooms = rooms;
           that.loading = false;
           that.dialogVisible = true;
-          console.log("rooms:", rooms);
         });
       }
     },

@@ -321,9 +321,12 @@ router.post('/sendText', async (req, res, next) => {
       topic: rooms
     });
     await room.say(message);
+    console.log('room:', room);
     record.create({
-      from: bot.self().id,
-      to: room.id,
+      from_name: bot.self().obj.name,
+      from_uin: bot.self().obj.id,
+      to_name: room.obj.topic,
+      to_uin: room.obj.id,
       type: 'text',
       content: message
     });
@@ -334,8 +337,10 @@ router.post('/sendText', async (req, res, next) => {
       });
       await room.say(message);
       record.create({
-        from: bot.self().id,
-        to: room.id,
+        from_name: bot.self().obj.name,
+        from_uin: bot.self().obj.id,
+        to_name: room.obj.topic,
+        to_uin: room.obj.id,
         type: 'text',
         content: message
       });
@@ -365,9 +370,12 @@ router.post('/sendMedia', async (req, res, next) => {
             topic: rooms[i]
           });
           await room.say(new MediaMessage(des_file));
+          console.log('room:', room);
           record.create({
-            from: bot.self().id,
-            to: room.id,
+            from_name: bot.self().obj.name,
+            from_uin: bot.self().obj.id,
+            to_name: room.obj.topic,
+            to_uin: room.obj.id,
             type: 'media',
             content: imgUrl
           });
@@ -418,7 +426,7 @@ const sequelize = __webpack_require__(2);
 
 const User = sequelize.define('User', {
   userName: Sequelize.STRING,
-  userId: Sequelize.INTEGER
+  userId: Sequelize.STRING
 });
 
 module.exports = User;
@@ -431,8 +439,10 @@ const Sequelize = __webpack_require__(1);
 const sequelize = __webpack_require__(2);
 
 const Record = sequelize.define('Record', {
-  from: Sequelize.STRING,
-  to: Sequelize.STRING,
+  from_name: Sequelize.STRING,
+  from_uin: Sequelize.STRING,
+  to_name: Sequelize.STRING,
+  to_uin: Sequelize.STRING,
   type: Sequelize.STRING,
   content: Sequelize.STRING
 });
