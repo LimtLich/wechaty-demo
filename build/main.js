@@ -408,7 +408,7 @@ router.get('/logout', async (req, res, next) => {
 });
 
 /* harmony default export */ __webpack_exports__["a"] = (router);
-/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, "server/api"))
+/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, "server\\api"))
 
 /***/ }),
 /* 10 */
