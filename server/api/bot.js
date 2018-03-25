@@ -183,8 +183,7 @@ router.get('/getRecords', async (req, res, next) => {
   record.findAll().then((list) => {
     res.json({
       data: list,
-      message: '发送成功',
-      filename: req.files[0].originalname
+      message: '发送成功'
     })
   })
 })
