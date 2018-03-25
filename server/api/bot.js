@@ -179,9 +179,21 @@ router.post('/sendMedia', async (req, res, next) => {
 })
 
 // logout
+router.get('/getRecords', async (req, res, next) => {
+  record.findAll().then((list) => {
+    res.json({
+      data: list,
+      message: '发送成功',
+      filename: req.files[0].originalname
+    })
+  })
+})
+
+// logout
 router.get('/logout', async (req, res, next) => {
   bot.logout()
   res.json("success")
 })
+
 
 export default router

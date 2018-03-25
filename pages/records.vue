@@ -1,19 +1,17 @@
 <template>
-    <section class="container" v-loading.fullscreen.lock="loading" element-loading-text="拼命加载中" element-loading-spinner="el-icon-loading" element-loading-background="rgba(0, 0, 0, 0.8)">
-        <el-table :data="tableData3" :header-cell-style="headerCell" style="width: 80%" height="500">
-            <el-table-column fixed prop="date" label="日期" width="150">
-            </el-table-column>
-            <el-table-column prop="name" label="姓名" width="120">
-            </el-table-column>
-            <el-table-column prop="province" label="省份" width="120">
-            </el-table-column>
-            <el-table-column prop="city" label="市区" width="120">
-            </el-table-column>
-            <el-table-column prop="address" label="地址" width="300">
-            </el-table-column>
-        </el-table>
+  <section class="container" v-loading.fullscreen.lock="loading" element-loading-text="拼命加载中" element-loading-spinner="el-icon-loading" element-loading-background="rgba(0, 0, 0, 0.8)">
+    <el-table :data="recordList" :header-cell-style="headerCell" style="width: 80%" height="500">
+      <el-table-column fixed prop="from_name" label="发送人" width="150">
+      </el-table-column>
+      <el-table-column prop="to_name" label="接受者" width="120">
+      </el-table-column>
+      <el-table-column prop="type" label="类型" width="120">
+      </el-table-column>
+      <el-table-column prop="content" label="内容" width="120">
+      </el-table-column>
+    </el-table>
 
-    </section>
+  </section>
 </template>
 
 <script>
@@ -25,61 +23,16 @@ export default {
     return {
       headerCell: { "text-align": "center" },
       loading: false,
-      tableData3: [
-        {
-          date: "2016-05-03",
-          name: "王小虎",
-          province: "上海",
-          city: "普陀区",
-          address: "上海市普陀区金沙江路 1518 弄"
-        },
-        {
-          date: "2016-05-02",
-          name: "王小虎",
-          province: "上海",
-          city: "普陀区",
-          address: "上海市普陀区金沙江路 1518 弄"
-        },
-        {
-          date: "2016-05-04",
-          name: "王小虎",
-          province: "上海",
-          city: "普陀区",
-          address: "上海市普陀区金沙江路 1518 弄"
-        },
-        {
-          date: "2016-05-01",
-          name: "王小虎",
-          province: "上海",
-          city: "普陀区",
-          address: "上海市普陀区金沙江路 1518 弄"
-        },
-        {
-          date: "2016-05-08",
-          name: "王小虎",
-          province: "上海",
-          city: "普陀区",
-          address: "上海市普陀区金沙江路 1518 弄"
-        },
-        {
-          date: "2016-05-06",
-          name: "王小虎",
-          province: "上海",
-          city: "普陀区",
-          address: "上海市普陀区金沙江路 1518 弄"
-        },
-        {
-          date: "2016-05-07",
-          name: "王小虎",
-          province: "上海",
-          city: "普陀区",
-          address: "上海市普陀区金沙江路 1518 弄"
-        }
+      recordList: [
       ]
     };
   },
   methods: {},
-  async mounted() {}
+  async mounted() {
+    let list = api.getRecords()
+    this.recordList = list
+    console.log(recordList)
+  }
 };
 </script>
 
