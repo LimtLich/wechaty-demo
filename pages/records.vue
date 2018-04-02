@@ -9,29 +9,32 @@
       </el-table-column>
       <el-table-column prop="content" label="内容" width="300">
       </el-table-column>
+      <el-table-column prop="createdAt" label="创建时间" width="400">
+      </el-table-column>
     </el-table>
-
   </section>
 </template>
 
 <script>
 import * as api from "~/api/";
 import { equal } from "assert";
+import moment from "moment";
 export default {
   layout: "main",
   data() {
     return {
       headerCell: { "text-align": "center" },
       loading: false,
-      recordList: [
-      ]
+      recordList: []
     };
   },
   methods: {},
   mounted() {
-    api.getRecords().then((res)=>{
+    api.getRecords().then((res) => {
+      res.data.map((e) => {
+        e.createdAt = moment(e.createdAt).format("YYYY-MM-DD HH:mm:ss")
+      })
       this.recordList = res.data
-      console.log(this.recordList )
     })
   }
 };

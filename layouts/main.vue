@@ -10,7 +10,7 @@
                 <div class="nav-logo">wechaty</div>
                 <el-menu active-text-color="#409EFF" default-active="1" class="el-menu-demo" mode="horizontal">
                     <el-menu-item index="1">消息管理</el-menu-item>
-                    <el-menu-item index="2">用户管理</el-menu-item>
+                    <!-- <el-menu-item index="2">用户管理</el-menu-item> -->
                     <div class="userMsg">
                         <div>用户：{{userInfo.rawObj.NickName}}</div>
                         <div>
@@ -18,7 +18,6 @@
                         </div>
                     </div>
                 </el-menu>
-
             </div>
         </header>
         <section class="el-container">
